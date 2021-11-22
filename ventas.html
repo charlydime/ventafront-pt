@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+      
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card" x-data="ventas()" x-init="inicializa()">
+                    <div class="card-header">
+                        venta
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Title</h4>
+                        <p class="card-text">Text</p>
+
+                        <div class="form-group">
+
+                            <small id="helpId" class="form-text text-muted">ID</small>
+                            <input type="text"  x-model="venta.Id_Venta"
+                            class="form-control" name="ID" id="ID" aria-describedby="helpId" placeholder=""  disabled>
+                          
+                            <small id="helpId" class="form-text text-muted">Fecha</small>
+                            <input type="date"  x-model="venta.fecha"
+                                class="form-control" name="fecha" id="fecha" aria-describedby="helpId" placeholder="">
+
+                            <small id="helpId" class="form-text text-muted">Cliente</small>
+                            <div x-on:ecliente.window=" venta.IdCliente =  $event.detail.IdCliente, nombre = $event.detail.nombre ">
+                                <input type="text" x-model="venta.IdCliente"  class="form-control" name="cliente" id="cliente" aria-describedby="helpId" placeholder="" hidden>
+                                <input type="text" x-model="nombre" class="form-control" name="cliente" id="cliente" aria-describedby="helpId" placeholder="" >
+                            </div>
+
+                           
+                            
+                            <div x-data="dropCliente()" x-init="inicializa()">
+                               
+                                <p>Seleccionado: <span x-text="selected.Id_Cliente"></span></p>
+                                <input type="hidden" :value="selected.value">
+                                <input class="form-control" type="text" x-model="search" placeholder="Click para buscar..." @click="optionsVisible = !optionsVisible">
+                                <div x-show="optionsVisible">
+                                    <template x-for="option in filteredOptions()">
+                                        <a @click.prevent="selected = option; $dispatch('ecliente', { IdCliente : selected.Id_Cliente, nombre : selected.nombre }); optionsVisible = false;" x-text="option.nombre"
+                                            style="display: block;"></a>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                       
+                            <small id="helpId" class="form-text text-muted">iva</small>
+                            <input type="text" x-model="venta.iva" class="form-control" name="iva" id="iva" aria-describedby="helpId" placeholder="" disabled>
+
+                            <small id="helpId" class="form-text text-muted">descuento</small>
+                            <input type="text" x-model="venta.descuento" class="form-control" name="descuento" id="descuento" aria-describedby="helpId" placeholder="" disabled>
+
+                            <small id="helpId" class="form-text text-muted">total</small>
+                            <input type="text" x-model="venta.total" class="form-control" name="total" id="total" aria-describedby="helpId" placeholder="" disabled>
+
+                           
+                       
+                    </div>
+                    <div class="card-footer text-muted">
+                        <div class="btn-group" role="group" aria-label="">
+                            <button type="button" class="btn btn-primary" x-on:click="hacerVenta()">Nueva</button>
+                            <button type="button" class="btn btn-success" x-on:click="guardar()">Guarda</button>
+                            <button type="button" class="btn btn-danger" x-on:click="borrar()">Borrar</button>
+                            <button type="button" class="btn btn-danger">Cierra</button>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-7">
+
+                <table class="table" x-data="detalle()" x-init="inicializa()">
+                    <thead>
+                        <tr>
+                            <th>Accion</th>
+                            <th>Id</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <div class="btn-group" role="group" aria-label="">
+                                    <button type="button" class="btn btn-success" x-on:click="guardar()">Guardar</button>
+                                    <button type="button" class="btn btn-info" x-on:click="nuevoProducto()">nuevo</button>
+
+                                </div>
+                            </th>
+                            <th x-text="detalle.Id_Detalle"> </th>
+                            <th> 
+                                <div x-on:eproducto.window=" detalle.IdProducto =  $event.detail.IdProducto, nombre = $event.detail.nombre ">
+
+                                    
+                                    <div x-text="detalle.IdProducto" ></div>
+                                </div>
+
+                                <div x-data="dropProducto()" x-init="inicializa()">
+                                
+                                    <p>Seleccionado: <span x-text="selected.nombre"></span></p>
+                                    <input type="hidden" :value="selected.value">
+                                    <input class="form-control" type="text" x-model="search" placeholder="Click para buscar..."
+                                        @click="optionsVisible = !optionsVisible">
+                                    <div x-show="optionsVisible">
+                                        <template x-for="option in filteredOptions()">
+                                            <a @click.prevent="selected = option; $dispatch('eproducto', { IdProducto : selected.Id_Producto, nombre : selected.nombre }); optionsVisible = false;"
+                                                x-text="option.nombre" style="display: block;"></a>
+                                        </template>
+                                    </div>
+                                </div>
+                            </th>
+                            <th> <input type="text" x-model="detalle.cantidad"></th>
+                            <th> <input type="text" x-model="detalle.subtotal"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="det in lista">
+                            
+                            <tr>
+                                <td scope="row">
+                                    <div class="btn-group" role="group" aria-label="">
+                                        <div x-text="det.IdVenta"></div>
+                                        <button type="button" class="btn btn-danger" x-on:click="borrar(det.Id_Detalle)" >Borra</i></button>
+                                        <button type="button" class="btn btn-warning" x-on:click="editar(det)">Edita</i></button>
+                                        
+                                    </div>
+                                </td>
+                                <td x-text="det.Id_Detalle"></td>
+                                <td  x-text="det.producto.nombre" ></td>
+                                <td  x-text="det.cantidad" ></td>
+                                <td x-text="det.subtotal"></td>
+                            </tr>
+
+                        </template>
+                       
+                    </tbody>
+                </table>
+            </div>      
+        </div>
+    </div>
+  </body>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="./js/ventas.js"></script>
+<script src="./js/detalle.js"></script>
+<script src="./js/clienteDrop.js"></script>
+<script src="./js/productoDrop.js"></script>
+</html>
