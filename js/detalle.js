@@ -54,10 +54,12 @@ function detalle() {
         },
         guardar: function () {
 
+            IdVentaLocal = this.detalle.IdVenta ? this.detalle.IdVenta : this.IdVenta;
+
             data = {
                 Id_Detalle: this.detalle.Id_Detalle,
-                IdVenta: this.detalle.IdVenta,
-                Id_Producto: this.detalle.IdProducto,
+                IdVenta: IdVentaLocal,
+                IdProducto: this.detalle.IdProducto,
                 cantidad: this.detalle.cantidad,
                 subtotal: this.detalle.subtotal,
                 IdCliente: this.detalle.IdCliente
@@ -74,7 +76,7 @@ function detalle() {
                         console.log(json);
                         this.detalle = json.data;
                         //this.nombre = json.data[0].cliente.nombre;
-
+                        this.listar();
                     })
                     .catch(err => console.log(err));
 
@@ -89,7 +91,7 @@ function detalle() {
                         console.log(json);
                         this.detalle = json.data[0];
                         this.producto = json.data[0].producto.nombre;
-
+                        this.listar();
                     })
                     .catch(err => console.log(err));
             }
@@ -101,7 +103,7 @@ function detalle() {
                     method: 'DELETE',
                 })
                     .then(res => {
-                        this.nuevoProducto();
+                        
                         console.log(res);
                         this.listar();
 

@@ -106,6 +106,22 @@ function ventas() {
                     } )
                     .catch(err => console.log(err));
 
+         },
+         cierra:function(){
+
+             fetch("http://localhost:8000/api/Ventas/recalcula/" + this.Id_Venta, {
+                 method: 'GET',
+             })
+                 .then(res => res.json())
+                 .then(json => {
+                     console.log(json);
+                     this.carga();
+                 })
+                 .catch(err => console.log(err));
+
+             
+
+
          }
 
          
